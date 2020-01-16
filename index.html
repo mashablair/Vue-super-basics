@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Vue fun</title>
+</head>
+
+<body>
+
+  <h1>Vue Store!</h1>
+  <p>Let's see what Vue can do to help us with our little store :)</p>
+  <p>Things are perfectly reactive and sync nicely.</p>
+  <div id="app">
+    <!-- <h2>{{ product }} are in stock.</h2> -->
+    <ul>
+      <li v-for="item in products">
+        <input type="number" v-model.number="item.quantity">{{item.quantity }} {{ item.name }}
+        <span v-if="item.quantity === 0">- OUT OF STOCK</span>
+        <button @click="item.quantity += 1">Add</button>
+      </li>
+    </ul>
+
+    <h2>Total Inventory: {{ totalProducts }}</h2>
+  </div>
+
+  <script src="https://unpkg.com/vue@2.6.11/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        products: []
+      },
+      computed: {
+        totalProducts() {
+          return this.products.reduce((sum, item) => {
+            return sum + item.quantity;
+          }, 0)
+        }
+      },
+      created() {
+        fetch('https://api.myjson.com/bins/74l63')
+          .then(response => response.json())
+          .then(json => {
+            this.products = json.products;
+          })
+      }
+    });
+
+    // to change value -- Vue is reactive:
+    // app.product = "Socks"
+
+    // to manipulate products:
+    // app.products.pop();
+  </script>
+</body>
+
+</html>
